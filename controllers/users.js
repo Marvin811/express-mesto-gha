@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 const User = require('../models/user');
 
 const ERROR_NOT_FOUND = 404;
@@ -33,16 +34,24 @@ module.exports.getIdUsers = (req, res) => {
     });
 };
 
-module.exports.createUsers = (req, res) => {
-  const { name, about, avatar } = req.body;
+module.exports.createUser = (req, res) => {
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
 
-  User.create({ name, about, avatar })
-    .then((users) => res.status(200).send({ users }))
+  if (!email || !password) return res.status(400).send({ message: 'Email или пароль введены не верно' });
+  User.create({
+    email, password, name, about, avatar,
+  })
+    .then(() => res.status(200).send({ message: `Пользователь ${email} успешно создан` }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({ message: 'Некорректные данные' });
+      if (err.code === 11000) {
+        return res.status(409).send({ message: 'Такой пользователь уже существует' });
       }
-      res.status(INTERNAL_SERVER_ERR).send({ message: 'Что-то пошло не так' });
+      if (err.name === 'ValidationError') {
+        return res.status(BAD_REQUEST).send({ message: 'Некорректные данные' });
+      }
+      return res.status(INTERNAL_SERVER_ERR).send({ message: 'Что-то пошло не так' });
     });
 };
 

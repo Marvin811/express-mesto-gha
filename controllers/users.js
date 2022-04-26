@@ -1,5 +1,6 @@
 /* eslint-disable consistent-return */
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const SALT_ROUNDS = 10;
@@ -55,6 +56,22 @@ module.exports.createUser = (req, res) => {
         return res.status(BAD_REQUEST).send({ message: 'Некорректные данные' });
       }
       return res.status(INTERNAL_SERVER_ERR).send({ message: 'Что-то пошло не так' });
+    });
+};
+
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      res.send({
+        token: jwt.sign({ _id: user._id }, 'super-strong-secret', {
+          expiresIn: '7d',
+        }),
+      });
+    })
+    .catch((err) => {
+      res.status(401).send({ message: err.message });
     });
 };
 

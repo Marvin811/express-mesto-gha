@@ -1,6 +1,8 @@
 /* eslint-disable consistent-return */
+const bcrypt = require('bcrypt');
 const User = require('../models/user');
 
+const SALT_ROUNDS = 10;
 const ERROR_NOT_FOUND = 404;
 const BAD_REQUEST = 400;
 const INTERNAL_SERVER_ERR = 500;
@@ -40,9 +42,10 @@ module.exports.createUser = (req, res) => {
   } = req.body;
 
   if (!email || !password) return res.status(400).send({ message: 'Email или пароль введены не верно' });
-  User.create({
-    email, password, name, about, avatar,
-  })
+  bcrypt.hash(password, SALT_ROUNDS)
+    .then((hash) => User.create({
+      email, name, about, avatar, password: hash,
+    }))
     .then(() => res.status(200).send({ message: `Пользователь ${email} успешно создан` }))
     .catch((err) => {
       if (err.code === 11000) {

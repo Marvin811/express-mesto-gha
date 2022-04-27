@@ -37,6 +37,20 @@ module.exports.getIdUsers = (req, res) => {
     });
 };
 
+module.exports.findCurrentUser = (req, res) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      res.status(200).send({ date: user });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(BAD_REQUEST).send({ message: 'Нет пользователя с таким id' });
+      } else {
+        res.status(INTERNAL_SERVER_ERR).send({ message: 'Что-то пошло не так' });
+      }
+    });
+};
+
 module.exports.createUser = (req, res) => {
   const {
     name, about, avatar, email, password,

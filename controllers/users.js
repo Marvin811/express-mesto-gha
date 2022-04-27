@@ -59,16 +59,32 @@ module.exports.getIdUsers = (req, res, next) => {
     });
 };
 
-module.exports.findCurrentUser = (req, res) => {
-  User.findById(req.user._id)
-    .then((user) => {
-      res.status(200).send({ date: user });
-    })
+// module.exports.getCurrentUser = (req, res) => {
+//  User.findById(req.user._id)
+//   .then((user) => {
+//     res.status(200).send({ date: user });
+//  })
+//  .catch((err) => {
+//    if (err.name === 'CastError') {
+//     res.status(400).send({ message: 'Нет пользователя с таким id' });
+//      } else {
+//        res.status(500).send({ message: 'Что-то пошло не так' });
+//      }
+//    });
+// };
+
+module.exports.getCurrentUser = (req, res, next) => {
+  const { _id } = req.user;
+
+  User.findById(_id)
+    .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Нет пользователя с таким id' });
+        next(new ValidationError('Переданы некорректные данные'));
+      } else if (err.statusCode === 404 || err.name === 'NotFoundError') {
+        next(new NotFoundError('Пользователь с указанным _id не найден'));
       } else {
-        res.status(500).send({ message: 'Что-то пошло не так' });
+        next(err);
       }
     });
 };

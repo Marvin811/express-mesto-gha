@@ -4,35 +4,57 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const SALT_ROUNDS = 10;
-const ERROR_NOT_FOUND = 404;
-const BAD_REQUEST = 400;
-const INTERNAL_SERVER_ERR = 500;
+const { NotFoundError } = require('../errors/notFoundError');
+const { ValidationError } = require('../errors/validationError');
 
-module.exports.getUsers = (req, res) => {
+// module.exports.getUsers = (_req, res) => {
+// User.find({})
+// .then((user) => res.status(200).send({ data: user }))
+// .catch((err) => {
+//  if (err.name === 'CastError') {
+//   res.status(400).send({ message: 'Нет таких пользователей' });
+// } else {
+//  res.status(500).send({ message: 'Произошла ошибка' });
+// }
+// });
+// };
+
+module.exports.getUsers = (req, res, next) => {
   User.find({})
-    .then((user) => res.status(200).send({ data: user }))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(BAD_REQUEST).send({ message: 'Нет таких пользователей' });
-      } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
-      }
-    });
+    .then((user) => res.send({ data: user }))
+    .catch(next);
 };
 
-module.exports.getIdUsers = (req, res) => {
+//  module.exports.getIdUsers = (req, res, next) => {
+//   User.findById(req.params.id)
+//     .then((user) => {
+//      if (!user) {
+//       res.status(404).send({ message: 'Пользователь с указанным _id не найден' });
+//   }
+//  res.status(200).send({ data: user });
+//  })
+//  .catch((err) => {
+//    if (err.name === 'CastError') {
+//      res.status(400).send({ message: 'Нет пользователя с таким id' });
+//   } else {
+//     res.status(500).send({ message: 'Что-то пошло не так' });
+//       }
+//    });
+//  };
+
+module.exports.getIdUsers = (req, res, next) => {
   User.findById(req.params.id)
     .then((user) => {
       if (!user) {
-        res.status(ERROR_NOT_FOUND).send({ message: 'Пользователь с указанным _id не найден' });
+        res.status(NotFoundError).send({ message: 'Пользователь с указанным _id не найден' });
       }
       res.status(200).send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(BAD_REQUEST).send({ message: 'Нет пользователя с таким id' });
+        next(new ValidationError('Переданы некорректные данные id пользователя'));
       } else {
-        res.status(INTERNAL_SERVER_ERR).send({ message: 'Что-то пошло не так' });
+        next(err);
       }
     });
 };
@@ -44,9 +66,9 @@ module.exports.findCurrentUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(BAD_REQUEST).send({ message: 'Нет пользователя с таким id' });
+        res.status(400).send({ message: 'Нет пользователя с таким id' });
       } else {
-        res.status(INTERNAL_SERVER_ERR).send({ message: 'Что-то пошло не так' });
+        res.status(500).send({ message: 'Что-то пошло не так' });
       }
     });
 };
@@ -67,9 +89,9 @@ module.exports.createUser = (req, res) => {
         return res.status(409).send({ message: 'Такой пользователь уже существует' });
       }
       if (err.name === 'ValidationError') {
-        return res.status(BAD_REQUEST).send({ message: 'Некорректные данные' });
+        return res.status(400).send({ message: 'Некорректные данные' });
       }
-      return res.status(INTERNAL_SERVER_ERR).send({ message: 'Что-то пошло не так' });
+      return res.status(500).send({ message: 'Что-то пошло не так' });
     });
 };
 
@@ -107,13 +129,13 @@ module.exports.updateUserInfo = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({ message: 'Некорректные данные' });
+        res.status(400).send({ message: 'Некорректные данные' });
         return;
       }
       if (err.name === 'CastError') {
-        res.status(BAD_REQUEST).send({ message: 'передан некорректный id' });
+        res.status(400).send({ message: 'передан некорректный id' });
       }
-      res.status(INTERNAL_SERVER_ERR).send({ message: 'Что-то пошло не так' });
+      res.status(500).send({ message: 'Что-то пошло не так' });
     });
 };
 
@@ -135,12 +157,12 @@ module.exports.updateAvatar = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({ message: 'Некорректные данные' });
+        res.status(400).send({ message: 'Некорректные данные' });
         return;
       }
       if (err.name === 'CastError') {
-        res.status(BAD_REQUEST).send({ message: 'передан некорректный id' });
+        res.status(400).send({ message: 'передан некорректный id' });
       }
-      res.status(INTERNAL_SERVER_ERR).send({ message: 'Что-то пошло не так' });
+      res.status(500).send({ message: 'Что-то пошло не так' });
     });
 };

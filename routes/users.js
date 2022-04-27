@@ -7,7 +7,7 @@ router.get('/', getUsers);
 // возвращает пользователя по _id
 router.get('/:id', getIdUsers);
 // возвращает информацию о текущем пользователе
-router.get('/', findCurrentUser);
+router.get('/me', findCurrentUser);
 // обновляет профиль
 router.patch('/me', updateUserInfo);
 // обновляет аватар

@@ -10,7 +10,7 @@ const INTERNAL_SERVER_ERR = 500;
 
 module.exports.getUsers = (req, res) => {
   User.find({})
-    .then((users) => res.status(200).send({ data: users }))
+    .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(BAD_REQUEST).send({ message: 'Нет таких пользователей' });
@@ -100,9 +100,9 @@ module.exports.updateUserInfo = (req, res) => {
       runValidators: true,
     },
   )
-    .then((users) => {
-      if (users) {
-        res.status(200).send(users);
+    .then((user) => {
+      if (user) {
+        res.status(200).send(user);
       }
     })
     .catch((err) => {
@@ -128,9 +128,9 @@ module.exports.updateAvatar = (req, res) => {
       runValidators: true,
     },
   )
-    .then((users) => {
-      if (users) {
-        res.status(200).send(users);
+    .then((user) => {
+      if (user) {
+        res.status(200).send(user);
       }
     })
     .catch((err) => {

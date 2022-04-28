@@ -29,7 +29,9 @@
     "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",
     "celebrate": "^15.0.1",
+    "cookie": "^0.5.0",
     "express": "^4.17.3",
+    "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.10",
     "validator": "^13.7.0"

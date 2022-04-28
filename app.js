@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+
 const cookieParser = require('cookie-parser');
 
 const router = require('./routes/index');
@@ -16,6 +17,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(router);
+app.use((req, res) => {
+  res.status(404).send({ message: 'Ошибка: данный ресурс не найден.' });
+});
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console

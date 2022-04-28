@@ -3,7 +3,6 @@ const { celebrate, Joi } = require('celebrate');
 const { createUser, login } = require('../controllers/users');
 const cardRoutes = require('./cards');
 const userRoutes = require('./users');
-const { auth } = require('../middlewares/auth');
 
 router.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -21,7 +20,7 @@ router.post('/signup', celebrate({
   }),
 }), createUser);
 
-router.use('/users', auth, userRoutes);
-router.use('/cards', auth, cardRoutes);
+router.use('/users', userRoutes);
+router.use('/cards', cardRoutes);
 
 module.exports = router;

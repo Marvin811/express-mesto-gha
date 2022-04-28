@@ -3,10 +3,10 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
-const { NotFoundError } = require('../errors/notFoundError');
-const { ValidationError } = require('../errors/validationError');
+const NotFoundError = require('../errors/NotFoundError');
+const ValidationError = require('../errors/ValidationError');
 const { resCheck } = require('../errors/researchCheck');
-const { UserExistError } = require('../errors/userExistError');
+const ConflictError = require('../errors/ConflictError');
 
 // module.exports.getUsers = (_req, res) => {
 // User.find({})
@@ -104,11 +104,13 @@ module.exports.createUser = (req, res, next) => {
     .then(() => res.send({ message: `Пользователь ${email} успешно создан` }))
     .catch((err) => {
       if (err.code === 11000) {
-        next(new UserExistError('Такой пользователь уже существует'));
+        next(new ConflictError('Пользователь с таким email уже существует'));
       }
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         next(new ValidationError('Переданы некорректные данные'));
-      } else next(err);
+      } else {
+        next(err);
+      }
     });
 };
 

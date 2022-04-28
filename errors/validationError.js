@@ -1,10 +1,9 @@
-const { ERROR_CODE_VALIDATION } = require('./errorsStatus');
-
-class ValidationError extends Error {
+class UnauthorizedError extends Error {
   constructor(message) {
     super(message);
-    this.statusCode = ERROR_CODE_VALIDATION;
+    this.name = 'UnauthorizedError';
+    this.statusCode = 401;
   }
 }
 
-module.exports = ValidationError;
+module.exports = UnauthorizedError;

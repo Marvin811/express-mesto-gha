@@ -1,9 +1,9 @@
-class UnauthorizedError extends Error {
+class ValidationError extends Error {
   constructor(message) {
     super(message);
-    this.name = 'UnauthorizedError';
-    this.statusCode = 401;
+    this.name = 'ValidationError';
+    this.statusCode = 400;
   }
 }
 
-module.exports = UnauthorizedError;
+module.exports = ValidationError;

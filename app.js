@@ -17,8 +17,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cookieParser());
 
-app.use(auth);
 app.use(router);
+app.use(auth);
+
 app.use((req, res) => {
   res.status(404).send({ message: 'Ошибка: данный ресурс не найден.' });
 });

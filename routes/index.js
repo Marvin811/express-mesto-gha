@@ -3,6 +3,7 @@ const { celebrate, Joi } = require('celebrate');
 const { createUser, login } = require('../controllers/users');
 const cardRoutes = require('./cards');
 const userRoutes = require('./users');
+const NotFoundError = require('../errors/NotFoundError');
 
 router.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -22,5 +23,7 @@ router.post('/signup', celebrate({
 
 router.use('/users', userRoutes);
 router.use('/cards', cardRoutes);
+
+router.use((req, res, next) => next(new NotFoundError('Маршрут не найден')));
 
 module.exports = router;

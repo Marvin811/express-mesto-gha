@@ -1,9 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-
+const { errors } = require('celebrate');
 const cookieParser = require('cookie-parser');
 
+const { handleError } = require('./errors/handleError');
 const auth = require('./middlewares/auth');
 const router = require('./routes/index');
 
@@ -20,10 +21,11 @@ app.use(cookieParser());
 app.use(router);
 app.use(auth);
 
-app.use((req, res) => {
-  res.status(404).send({ message: 'Ошибка: данный ресурс не найден.' });
-});
+app.use(errors());
+
+app.use((err, req, res, next) => handleError({ res, err, next }));
 
 app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
   console.log(`Cсылка на сервер ${PORT}`);
 });

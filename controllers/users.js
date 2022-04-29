@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const NotFoundError = require('../errors/NotFoundError');
-const ValidationError = require('../errors/ValidationError');
+const ValidationError = require('../errors/validationError');
 const ConflictError = require('../errors/ConflictError');
 const { resCheck } = require('../errors/researchCheck');
 

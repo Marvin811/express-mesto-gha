@@ -1,7 +1,7 @@
 const Card = require('../models/card');
 
 const NotFoundError = require('../errors/NotFoundError');
-const ValidationError = require('../errors/ValidationError');
+const ValidationError = require('../errors/validationError');
 const ForbiddenError = require('../errors/ForbiddenError');
 const { resCheck } = require('../errors/researchCheck');
 

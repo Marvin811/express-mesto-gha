@@ -4,6 +4,7 @@ const { createUser, login } = require('../controllers/users');
 const cardRoutes = require('./cards');
 const userRoutes = require('./users');
 const NotFoundError = require('../errors/NotFoundError');
+const auth = require('../middlewares/auth');
 
 router.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -20,6 +21,8 @@ router.post('/signup', celebrate({
     avatar: Joi.string().pattern(/^(https?:\/\/)(www\.)?([\da-z-.]+)\.([a-z.]{2,6})[\da-zA-Z-._~:?#[\]@!$&'()*+,;=/]*\/?#?$/, 'URL'),
   }),
 }), createUser);
+
+router.use(auth);
 
 router.use('/users', userRoutes);
 router.use('/cards', cardRoutes);

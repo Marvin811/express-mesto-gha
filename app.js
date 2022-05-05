@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const cookieParser = require('cookie-parser');
 
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { handleError } = require('./errors/handleError');
 const router = require('./routes/index');
 
@@ -17,7 +18,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cookieParser());
 
+app.use(requestLogger); // подключаем логгер запросов
+
 app.use(router);
+
+app.use(errorLogger); // подключаем логгер ошибок
 
 app.use(errors());
 

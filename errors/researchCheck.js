@@ -1,4 +1,4 @@
-const NotFoundError = require('./NotFoundError');
+const NotFoundError = require('./notFoundError');
 
 function resCheck(res) {
   if (res === null) {

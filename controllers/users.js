@@ -7,6 +7,7 @@ require('dotenv').config();
 const NotFoundError = require('../errors/notFoundError');
 const ValidationError = require('../errors/validationError');
 const ConflictError = require('../errors/ConflictError');
+const UnauthorizedError = require('../errors/UnauthorizedError');
 const { resCheck } = require('../errors/researchCheck');
 
 module.exports.getUsers = (req, res, next) => {
@@ -74,20 +75,18 @@ module.exports.createUser = (req, res, next) => {
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-
   return User.findUserByCredentials(email, password)
     .then((user) => {
+      if (!email || !password) {
+        next(new UnauthorizedError('Ошибка авторизации'));
+      }
       const token = jwt.sign(
         { _id: user._id },
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
         { expiresIn: '7d' },
       );
-
-      res.cookie('jwt', token, {
-        maxAge: 3600000 * 24 * 7,
-        httpOnly: true,
-      })
-        .send({ message: 'Логин успешный' });
+      return res
+        .send({ token });
     })
     .catch(next);
 };

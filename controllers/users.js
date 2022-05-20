@@ -12,14 +12,14 @@ const { resCheck } = require('../errors/researchCheck');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch(next);
 };
 
 module.exports.getIdUsers = (req, res, next) => {
   User.findById(req.params.id)
     .then((data) => resCheck(data))
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new ValidationError('Переданы некорректные данные id пользователя'));
@@ -36,7 +36,7 @@ module.exports.getCurrentUser = (req, res, next) => {
 
   User.findById(_id)
     .then((data) => resCheck(data))
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new ValidationError('Переданы некорректные данные id пользователя'));
@@ -103,7 +103,7 @@ module.exports.updateUserInfo = (req, res, next) => {
     },
   )
     .then((data) => resCheck(data))
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         next(new ValidationError('Переданы некорректные данные id пользователя'));
@@ -127,7 +127,7 @@ module.exports.updateAvatar = (req, res, next) => {
     },
   )
     .then((data) => resCheck(data))
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         next(new ValidationError('Переданы некорректные данные id пользователя'));

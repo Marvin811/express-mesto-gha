@@ -88,7 +88,9 @@ module.exports.login = (req, res, next) => {
       return res
         .send({ token });
     })
-    .catch(next);
+    .catch(() => {
+      next(new UnauthorizedError('Ошибка авторизации'));
+    });
 };
 
 module.exports.updateUserInfo = (req, res, next) => {
